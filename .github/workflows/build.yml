@@ -21,4 +21,10 @@ jobs:
         cache: 'gradle'
 
     - name: Build with Gradle
-      run: cd spotify-stats-app && ./gradlew build
+      run: cd spotify-stats-app && ./gradlew assembleRelease
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release
+        path: spotify-stats-app/app/build/outputs/apk/release/app-release-unsigned.apk
