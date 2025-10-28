@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def commitCount = getGitCommitCount()
+
 android {
     namespace "com.example.spotyfeather"
     compileSdkVersion 33
@@ -7,8 +9,8 @@ android {
         applicationId "com.example.spotyfeather"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
+        versionCode commitCount
+        versionName "1.0.${commitCount}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [redirectHostName: "callback", redirectSchemeName: "com.example.spotyfeather"]
     }
@@ -18,6 +20,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "SpotyFeather-${variant.versionName}.apk"
+        }
+    }
+}
+
+def getGitCommitCount() {
+    return Integer.parseInt('git rev-list --count HEAD'.execute().text.trim())
 }
 
 dependencies {
