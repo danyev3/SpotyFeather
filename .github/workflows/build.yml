@@ -20,7 +20,15 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
+    - name: Cache debug keystore
+      id: cache-debug-keystore # Add an id to the step
+      uses: actions/cache@v3
+      with:
+        path: ~/.android/debug.keystore
+        key: debug-keystore
+
     - name: Generate debug keystore
+      if: steps.cache-debug-keystore.outputs.cache-hit != 'true'
       run: |
         mkdir -p ~/.android
         keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
